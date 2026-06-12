@@ -1,0 +1,20 @@
+# systemd unit so the monitor runs at boot and restarts on failure.
+# Install:
+#   sudo cp septic-monitor.service /etc/systemd/system/
+#   sudo systemctl enable --now septic-monitor
+# Adjust User/WorkingDirectory/ExecStart paths to where you cloned the repo.
+[Unit]
+Description=Septic Lift Station Monitor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/arduino-project/raspberrypi
+ExecStart=/home/pi/arduino-project/raspberrypi/venv/bin/python3 septic_monitor.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="720" viewBox="0 0 1000 720" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="1000" height="720" fill="#f7f8fa"/>
+  <text x="500" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#1a2733">Septic Lift Station — Wiring Schematic (ESP32)</text>
+  <text x="500" y="56" text-anchor="middle" font-size="13" fill="#d12f2f" font-weight="600">⚠ 120 V / 30 A mains — contactor switches the pump, NOT the ESP32. Seal all conduit (septic gas).</text>
+
+  <!-- ===== MAINS / POWER (left) ===== -->
+  <rect x="30" y="90" width="230" height="250" rx="8" fill="#fff" stroke="#c2502f" stroke-width="2"/>
+  <text x="145" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#c2502f">120 VAC POWER</text>
+
+  <rect x="55" y="130" width="180" height="38" rx="5" fill="#fbe9e7" stroke="#c2502f"/>
+  <text x="145" y="154" text-anchor="middle" font-size="13" fill="#8a2d1a">30 A breaker + GFCI</text>
+
+  <rect x="55" y="184" width="180" height="56" rx="5" fill="#fbe9e7" stroke="#c2502f"/>
+  <text x="145" y="206" text-anchor="middle" font-size="13" font-weight="700" fill="#8a2d1a">CONTACTOR ≥40 A</text>
+  <text x="145" y="224" text-anchor="middle" font-size="11" fill="#8a2d1a">120 V coil · 2-pole</text>
+
+  <rect x="55" y="256" width="180" height="38" rx="5" fill="#eef3f7" stroke="#5b7a90"/>
+  <text x="145" y="280" text-anchor="middle" font-size="13" fill="#33485a">5 V DIN PSU → ESP32</text>
+
+  <ellipse cx="145" cy="318" rx="34" ry="16" fill="#d6e4ee" stroke="#33485a"/>
+  <text x="145" y="323" text-anchor="middle" font-size="12" font-weight="700" fill="#1a2733">PUMP</text>
+  <text x="145" y="335" text-anchor="middle" font-size="10" fill="#33485a">120V/30A</text>
+
+  <!-- breaker->contactor->pump path -->
+  <line x1="145" y1="168" x2="145" y2="184" stroke="#c2502f" stroke-width="2"/>
+  <line x1="145" y1="240" x2="145" y2="302" stroke="#c2502f" stroke-width="2"/>
+
+  <!-- ===== ESP32 (center) ===== -->
+  <rect x="400" y="180" width="200" height="300" rx="10" fill="#1f6f54" stroke="#13503c" stroke-width="2"/>
+  <text x="500" y="208" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">ESP32</text>
+  <text x="500" y="226" text-anchor="middle" font-size="11" fill="#cfeede">WiFi controller</text>
+
+  <!-- left pins -->
+  <text x="412" y="258" font-size="11" fill="#eafff5">GPIO26 → relay</text>
+  <text x="412" y="284" font-size="11" fill="#eafff5">GPIO27 buzzer</text>
+  <text x="412" y="310" font-size="11" fill="#eafff5">GPIO14 run LED</text>
+  <text x="412" y="336" font-size="11" fill="#eafff5">GPIO12 alarm LED</text>
+  <text x="412" y="362" font-size="11" fill="#eafff5">5V / GND</text>
+
+  <!-- right pins -->
+  <text x="588" y="258" text-anchor="end" font-size="11" fill="#eafff5">GPIO21 SDA</text>
+  <text x="588" y="284" text-anchor="end" font-size="11" fill="#eafff5">GPIO22 SCL</text>
+  <text x="588" y="318" text-anchor="end" font-size="11" fill="#eafff5">GPIO32 Float L</text>
+  <text x="588" y="344" text-anchor="end" font-size="11" fill="#eafff5">GPIO33 Float C</text>
+  <text x="588" y="370" text-anchor="end" font-size="11" fill="#eafff5">GPIO25 Float H</text>
+
+  <!-- ESP32 -> relay -> contactor coil -->
+  <line x1="400" y1="254" x2="300" y2="254" stroke="#444" stroke-width="2"/>
+  <rect x="270" y="238" width="60" height="34" rx="5" fill="#fff" stroke="#444"/>
+  <text x="300" y="259" text-anchor="middle" font-size="10" fill="#222">opto relay</text>
+  <line x1="270" y1="255" x2="235" y2="212" stroke="#444" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="250" y="246" font-size="9" fill="#666">→ coil</text>
+
+  <!-- ===== ADS1115 + level loop (right top) ===== -->
+  <rect x="700" y="120" width="270" height="180" rx="8" fill="#fff" stroke="#2b6fb0" stroke-width="2"/>
+  <text x="835" y="142" text-anchor="middle" font-size="14" font-weight="700" fill="#2b6fb0">LEVEL SENSE (4–20 mA)</text>
+
+  <rect x="720" y="156" width="110" height="40" rx="5" fill="#e7f0fa" stroke="#2b6fb0"/>
+  <text x="775" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4f7e">ADS1115</text>
+  <text x="775" y="190" text-anchor="middle" font-size="10" fill="#1d4f7e">16-bit ADC</text>
+
+  <rect x="855" y="156" width="95" height="40" rx="5" fill="#e7f0fa" stroke="#2b6fb0"/>
+  <text x="902" y="176" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4f7e">165 Ω</text>
+  <text x="902" y="190" text-anchor="middle" font-size="10" fill="#1d4f7e">sense R</text>
+
+  <rect x="760" y="226" width="180" height="50" rx="5" fill="#e7f0fa" stroke="#2b6fb0"/>
+  <text x="850" y="246" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4f7e">Submersible Tx (vented)</text>
+  <text x="850" y="262" text-anchor="middle" font-size="10" fill="#1d4f7e">4–20 mA · sewage-rated · 0–60 in</text>
+
+  <line x1="830" y1="176" x2="855" y2="176" stroke="#2b6fb0" stroke-width="2"/>
+  <line x1="902" y1="196" x2="902" y2="226" stroke="#2b6fb0" stroke-width="2"/>
+  <line x1="775" y1="196" x2="775" y2="226" stroke="#2b6fb0" stroke-width="2"/>
+  <!-- I2C esp32 -> ads -->
+  <line x1="600" y1="270" x2="720" y2="180" stroke="#2b6fb0" stroke-width="2"/>
+  <text x="640" y="214" font-size="10" fill="#2b6fb0">I²C</text>
+
+  <!-- ===== FLOATS (right bottom) ===== -->
+  <rect x="700" y="430" width="270" height="200" rx="8" fill="#fff" stroke="#7a5bb0" stroke-width="2"/>
+  <text x="835" y="452" text-anchor="middle" font-size="14" font-weight="700" fill="#7a5bb0">FLOAT SWITCHES (to GND)</text>
+
+  <rect x="720" y="468" width="230" height="36" rx="5" fill="#f1ecf8" stroke="#7a5bb0"/>
+  <text x="730" y="491" font-size="12" fill="#4a356e">Float 3 HIGH → alarm (GPIO25)</text>
+  <rect x="720" y="512" width="230" height="36" rx="5" fill="#f1ecf8" stroke="#7a5bb0"/>
+  <text x="730" y="535" font-size="12" fill="#4a356e">Float 2 CTRL → pump on (GPIO33)</text>
+  <rect x="720" y="556" width="230" height="36" rx="5" fill="#f1ecf8" stroke="#7a5bb0"/>
+  <text x="730" y="579" font-size="12" fill="#4a356e">Float 1 LOW → dry-run off (GPIO32)</text>
+  <text x="835" y="612" text-anchor="middle" font-size="10" fill="#7a5bb0">INPUT_PULLUP · tripped = LOW · 10 kΩ pull-ups</text>
+
+  <line x1="600" y1="318" x2="700" y2="486" stroke="#7a5bb0" stroke-width="1.5"/>
+  <line x1="600" y1="344" x2="700" y2="530" stroke="#7a5bb0" stroke-width="1.5"/>
+  <line x1="600" y1="370" x2="700" y2="574" stroke="#7a5bb0" stroke-width="1.5"/>
+
+  <!-- WiFi out -->
+  <rect x="400" y="520" width="200" height="46" rx="8" fill="#eef3f7" stroke="#33485a"/>
+  <text x="500" y="540" text-anchor="middle" font-size="12" font-weight="700" fill="#1a2733">WiFi → monitoring endpoint</text>
+  <text x="500" y="556" text-anchor="middle" font-size="10" fill="#33485a">POST JSON (Home Assistant / cloud)</text>
+  <line x1="500" y1="480" x2="500" y2="520" stroke="#33485a" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <!-- enclosure note -->
+  <rect x="30" y="430" width="340" height="200" rx="8" fill="#fffdf3" stroke="#b8932f" stroke-width="1.5"/>
+  <text x="50" y="456" font-size="13" font-weight="700" fill="#8a6d18">Enclosure &amp; safety</text>
+  <text x="50" y="480" font-size="11" fill="#5c4a14">• NEMA 4X box, mounted AWAY from wet well</text>
+  <text x="50" y="500" font-size="11" fill="#5c4a14">• Conduit sealing fittings on every entry</text>
+  <text x="50" y="520" font-size="11" fill="#5c4a14">• Flyback/snubber across contactor coil</text>
+  <text x="50" y="540" font-size="11" fill="#5c4a14">• GFCI required (wet location)</text>
+  <text x="50" y="560" font-size="11" fill="#5c4a14">• Confirm hazardous-location code (CH4/H2S)</text>
+  <text x="50" y="580" font-size="11" fill="#5c4a14">• ESP32 PSU separate from pump circuit</text>
+  <text x="50" y="604" font-size="11" fill="#5c4a14">• Licensed electrician verifies line side</text>
+</svg>

@@ -1,0 +1,105 @@
+# Home Assistant package for the Septic Lift Station Monitor.
+#
+# Install:
+#   1) In configuration.yaml add (once):   homeassistant:\n     packages: !include_dir_named packages
+#   2) Put this file at:  config/packages/septic_package.yaml
+#   3) Restart HA.
+#   4) Point the ESP32 at:  http://<HA_IP>:8123/api/webhook/septic
+#      (set MONITOR_URL in config.h to exactly that).
+#
+# The firmware POSTs JSON like:
+#   {"level_inches":31.4,"loop_mA":12.3,"pump_on":true,"alarm":false,
+#    "sensor_fault":false,"float_low":false,"float_ctrl":true,"float_high":false,
+#    "uptime_s":12345}
+
+template:
+  - trigger:
+      - platform: webhook
+        webhook_id: septic
+        allowed_methods: [POST]
+        local_only: true          # set false only if posting from outside the LAN
+    sensor:
+      - name: "Septic Level"
+        unique_id: septic_level_in
+        unit_of_measurement: "in"
+        icon: mdi:waves-arrow-up
+        state: "{{ trigger.json.level_inches | float(0) }}"
+      - name: "Septic Loop Current"
+        unique_id: septic_loop_ma
+        unit_of_measurement: "mA"
+        icon: mdi:current-dc
+        state: "{{ trigger.json.loop_mA | float(0) }}"
+      - name: "Septic Uptime"
+        unique_id: septic_uptime_s
+        unit_of_measurement: "s"
+        device_class: duration
+        state: "{{ trigger.json.uptime_s | int(0) }}"
+    binary_sensor:
+      - name: "Septic Pump Running"
+        unique_id: septic_pump_running
+        device_class: running
+        state: "{{ trigger.json.pump_on }}"
+      - name: "Septic Alarm"
+        unique_id: septic_alarm
+        device_class: problem
+        state: "{{ trigger.json.alarm }}"
+      - name: "Septic Sensor Fault"
+        unique_id: septic_sensor_fault
+        device_class: problem
+        state: "{{ trigger.json.sensor_fault }}"
+      - name: "Septic Float Low"
+        unique_id: septic_float_low
+        device_class: moisture
+        state: "{{ trigger.json.float_low }}"
+      - name: "Septic Float Control"
+        unique_id: septic_float_ctrl
+        device_class: moisture
+        state: "{{ trigger.json.float_ctrl }}"
+      - name: "Septic Float High"
+        unique_id: septic_float_high
+        device_class: moisture
+        state: "{{ trigger.json.float_high }}"
+
+automation:
+  - alias: "Septic HIGH-LEVEL alarm notification"
+    id: septic_high_level_alarm
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.septic_float_high
+        to: "on"
+      - platform: state
+        entity_id: binary_sensor.septic_alarm
+        to: "on"
+    action:
+      - service: notify.notify        # change to your notify target (e.g. notify.mobile_app_xxx)
+        data:
+          title: "⚠️ Septic HIGH LEVEL ALARM"
+          message: >
+            High-level float/alarm tripped. Level {{ states('sensor.septic_level') }} in,
+            pump {{ 'RUNNING' if is_state('binary_sensor.septic_pump_running','on') else 'OFF' }}.
+
+  - alias: "Septic sensor fault notification"
+    id: septic_sensor_fault_alert
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.septic_sensor_fault
+        to: "on"
+        for: "00:01:00"              # debounce 1 min before alerting
+    action:
+      - service: notify.notify
+        data:
+          title: "Septic level sensor fault"
+          message: "4-20 mA loop reading invalid — running on floats only. Check the transmitter/wiring."
+
+  - alias: "Septic controller offline"
+    id: septic_offline_alert
+    trigger:
+      - platform: state
+        entity_id: sensor.septic_uptime
+        to: "unavailable"
+        for: "00:05:00"             # no webhook posts for 5 min
+    action:
+      - service: notify.notify
+        data:
+          title: "Septic monitor offline"
+          message: "No status from the septic controller for 5 minutes. Check power/WiFi."
