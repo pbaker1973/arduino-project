@@ -1,0 +1,9 @@
+# Secrets / per-install config — never commit
+src/config.h
+
+# Build artifacts
+build/
+*.bin
+*.elf
+.pio/
+.vscode/

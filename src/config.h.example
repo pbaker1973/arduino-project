@@ -1,0 +1,43 @@
+// config.h  —  COPY this file to config.h and fill in your values.
+// config.h is git-ignored. NEVER commit WiFi passwords or endpoint tokens.
+#pragma once
+
+// ---------------- WiFi ----------------
+#define WIFI_SSID        "YOUR_WIFI_SSID"
+#define WIFI_PASSWORD    "YOUR_WIFI_PASSWORD"
+
+// ------------- Monitoring endpoint -------------
+// Where status JSON is POSTed (Home Assistant webhook, ThingsBoard, your service).
+#define MONITOR_URL      "http://192.168.1.50:8123/api/webhook/septic"
+#define MONITOR_TOKEN    ""            // optional bearer token; leave "" if none
+#define POST_INTERVAL_MS 15000UL       // how often to publish status
+
+// ------------- Pin map (see docs/WIRING.md) -------------
+#define PIN_FLOAT_LOW    32            // Float 1: low / pump OFF (dry-run)
+#define PIN_FLOAT_CTRL   33            // Float 2: control / pump ON backup
+#define PIN_FLOAT_HIGH   25            // Float 3: HIGH-LEVEL ALARM
+#define PIN_PUMP_RELAY   26            // -> opto relay -> contactor coil
+#define PIN_BUZZER       27
+#define PIN_LED_RUN      14
+#define PIN_LED_ALARM    12
+#define PIN_I2C_SDA      21
+#define PIN_I2C_SCL      22
+
+// Floats are dry contacts to GND with INPUT_PULLUP -> tripped reads LOW.
+#define FLOAT_ACTIVE_LOW true
+
+// ------------- Level sensor scaling (4-20 mA loop) -------------
+#define ADS_CHANNEL      0             // ADS1115 input the loop resistor is on
+#define SENSE_OHMS       165.0         // sense resistor value (ohms)
+#define LEVEL_RANGE_IN   60.0          // transmitter full-scale range, inches (e.g. 5 ft = 60)
+#define LOOP_MIN_MA      4.0
+#define LOOP_MAX_MA      20.0
+// Loop fault band: readings outside this (open/short) => analog invalid.
+#define LOOP_VALID_MIN_MA 3.5
+#define LOOP_VALID_MAX_MA 20.5
+
+// ------------- Control thresholds (inches) -------------
+#define LEVEL_ON_IN      30.0          // pump ON above this depth
+#define LEVEL_OFF_IN     12.0          // pump OFF below this depth (must be < LEVEL_ON_IN)
+#define MIN_OFF_SECONDS  60UL          // anti short-cycle
+#define MAX_RUN_SECONDS  600UL         // runtime watchdog -> alarm if exceeded
