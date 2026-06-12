@@ -1,9 +1,5 @@
 # Secrets / per-install config — never commit
 src/config.h
-raspberrypi/config.py
-raspberrypi/venv/
-__pycache__/
-*.pyc
 
 # Build artifacts
 build/
