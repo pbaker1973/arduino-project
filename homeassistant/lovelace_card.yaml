@@ -1,0 +1,53 @@
+# Lovelace dashboard for the Septic Lift Station.
+# Paste into a dashboard (Edit dashboard -> raw config -> add under `views:`),
+# or add as a single card via "Add card -> Manual". Entity ids match
+# septic_package.yaml. The gauge max should match LEVEL_RANGE_IN (default 60 in).
+
+title: Septic Lift Station
+path: septic
+icon: mdi:water-pump
+cards:
+  - type: gauge
+    name: Wet Well Level
+    entity: sensor.septic_level
+    unit: in
+    min: 0
+    max: 60
+    needle: true
+    severity:
+      green: 0
+      yellow: 30      # ~ pump-ON threshold
+      red: 50         # approaching high-level alarm
+
+  - type: entities
+    title: Status
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.septic_pump_running
+        name: Pump
+      - entity: binary_sensor.septic_alarm
+        name: Alarm
+      - entity: binary_sensor.septic_sensor_fault
+        name: Level Sensor Fault
+      - entity: sensor.septic_loop_current
+        name: Loop Current
+      - entity: sensor.septic_level
+        name: Level
+
+  - type: glance
+    title: Floats
+    columns: 3
+    entities:
+      - entity: binary_sensor.septic_float_low
+        name: Low (OFF)
+      - entity: binary_sensor.septic_float_ctrl
+        name: Control (ON)
+      - entity: binary_sensor.septic_float_high
+        name: High (ALARM)
+
+  - type: history-graph
+    title: Level & Pump (24h)
+    hours_to_show: 24
+    entities:
+      - entity: sensor.septic_level
+      - entity: binary_sensor.septic_pump_running

@@ -33,18 +33,21 @@ back to float-only control. Float 3 forces an alarm + pump-on regardless.
 ## Repo layout
 
 ```
-docs/PARTS.md      Bill of materials with model numbers
-docs/WIRING.md     Wiring + safety, pinout, sensor scaling math
-src/                ESP32 firmware (Arduino)
-src/config.h.example  Copy to config.h and fill in your secrets/calibration
+docs/PARTS.md                            Bill of materials with model numbers
+docs/WIRING.md                           Wiring + safety, pinout, sensor scaling math
+src/septic_lift_monitor/                 ESP32 firmware (Arduino sketch folder)
+src/septic_lift_monitor/config.h.example Copy to config.h; secrets/calibration
+homeassistant/                           HA package + Lovelace dashboard card
+.github/workflows/build.yml              CI: compiles the sketch on every push
 ```
 
 ## Quick start
 
 1. Build the panel per `docs/WIRING.md`.
-2. `cp src/config.h.example src/config.h` and fill in WiFi + calibration + endpoint.
-3. Flash `src/septic_lift_monitor.ino` with the Arduino IDE / arduino-cli
-   (board: *ESP32 Dev Module*; libs: `ADS1X15`, `ArduinoJson`).
+2. `cp src/septic_lift_monitor/config.h.example src/septic_lift_monitor/config.h`
+   and fill in WiFi + calibration + endpoint.
+3. Flash `src/septic_lift_monitor/septic_lift_monitor.ino` with the Arduino IDE /
+   arduino-cli (board: *ESP32 Dev Module*; libs: `ADS1X15`, `ArduinoJson`).
 4. Watch the serial monitor for calibration, then mount and test with the
    floats before trusting the analog level.
 

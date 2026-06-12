@@ -1,5 +1,5 @@
 # Secrets / per-install config — never commit
-src/config.h
+src/septic_lift_monitor/config.h
 
 # Build artifacts
 build/
